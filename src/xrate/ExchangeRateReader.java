@@ -10,7 +10,12 @@ import java.util.Properties;
 public class ExchangeRateReader {
 
     private String accessKey;
+    private URL myURL;
 
+    public getRate(JsonObject ratesInfo, String currency){
+    	Gson g = new Gson();
+	ratesInfo.get();
+    }
     /**
      * Construct an exchange rate reader using the given base URL. All requests
      * will then be relative to that URL. If, for example, your source is Xavier
@@ -31,6 +36,7 @@ public class ExchangeRateReader {
          */
 
         // TODO Your code here
+ 	myURL = new URL(baseURL);
 
         // Reads the access keys from `etc/access_keys.properties`
         readAccessKeys();
@@ -84,6 +90,15 @@ public class ExchangeRateReader {
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
         // TODO Your code here
 
+	String date = Integer.toString(year)+"-"+Integer.toString(month)+"-"+Integer.toString(day);
+	URL fixer = new URL(myURL+date+"?access_key=");
+	InputStream inputStream = fixer.openStream();
+	
+	JsonReader reader = Json.createReader(new StringReader(
+	JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
+
+	getRate(jsonObject,currencyCode);
+
         // Remove the next line when you've implemented this method.
         throw new UnsupportedOperationException();
     }
@@ -109,6 +124,10 @@ public class ExchangeRateReader {
             String fromCurrency, String toCurrency,
             int year, int month, int day) throws IOException {
         // TODO Your code here
+	InputStream inputStream = myURL.openStream();
+	
+	
+	getRate(JsonObject,fromCurrency);
 
         // Remove the next line when you've implemented this method.
         throw new UnsupportedOperationException();
