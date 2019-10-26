@@ -19,8 +19,8 @@ public class ExchangeRateReader {
 
     public float getRate(JsonObject ratesInfo, String currency) {
         Gson g = new Gson();
-        JsonObject obj = ratesInfo.getAsJsonObject(currency);
-        return obj.getAsFloat();
+        JsonObject obj = ratesInfo.getAsJsonObject("rates");
+        return obj.get(currency).getAsFloat();
 
     }
 
@@ -150,10 +150,10 @@ public class ExchangeRateReader {
         InputStreamReader reader = new InputStreamReader(inputStream);
         JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
 
-	   float from = getRate(jsonObject,fromCurrency);
-	   float to = getRate(jsonObject,toCurrency);
-	   float difference = to-from;
-	   return difference;
+        float from = getRate(jsonObject, fromCurrency);
+        float to = getRate(jsonObject, toCurrency);
+
+        return from / to;
 
     }
 }
