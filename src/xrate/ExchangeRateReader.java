@@ -1,5 +1,10 @@
 package xrate;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 import java.io.*;
 import java.net.URL;
 import java.util.Properties;
@@ -12,9 +17,11 @@ public class ExchangeRateReader {
     private String accessKey;
     private URL myURL;
 
-    public getRate(JsonObject ratesInfo, String currency){
+    public float getRate(JsonObject ratesInfo, String currency){
     	Gson g = new Gson();
-	ratesInfo.get();
+    	JsonObject obj = ratesInfo.getAsJsonObject(currency);
+    	return obj.getAsFloat();
+
     }
     /**
      * Construct an exchange rate reader using the given base URL. All requests
@@ -94,13 +101,10 @@ public class ExchangeRateReader {
 	URL fixer = new URL(myURL+date+"?access_key=");
 	InputStream inputStream = fixer.openStream();
 	
-	JsonReader reader = Json.createReader(new StringReader(
+	InputStreamReader reader = new InputStreamReader(inputStream);
 	JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
 
-	getRate(jsonObject,currencyCode);
-
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+	return getRate(jsonObject,currencyCode);
     }
 
     /**
@@ -124,12 +128,18 @@ public class ExchangeRateReader {
             String fromCurrency, String toCurrency,
             int year, int month, int day) throws IOException {
         // TODO Your code here
-	InputStream inputStream = myURL.openStream();
-	
-	
-	getRate(JsonObject,fromCurrency);
 
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        String date = Integer.toString(year)+"-"+Integer.toString(month)+"-"+Integer.toString(day);
+        URL fixer = new URL(myURL+date+"?access_key=");
+        InputStream inputStream = fixer.openStream();
+
+        InputStreamReader reader = new InputStreamReader(inputStream);
+        JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
+
+	   float from = getRate(jsonObject,fromCurrency);
+	   float to = getRate(jsonObject,toCurrency);
+	   float difference = to-from;
+	   return difference;
+
     }
 }
