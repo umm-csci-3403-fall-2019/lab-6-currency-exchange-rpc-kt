@@ -17,12 +17,13 @@ public class ExchangeRateReader {
     private String accessKey;
     private URL myURL;
 
-    public float getRate(JsonObject ratesInfo, String currency){
-    	Gson g = new Gson();
-    	JsonObject obj = ratesInfo.getAsJsonObject(currency);
-    	return obj.getAsFloat();
+    public float getRate(JsonObject ratesInfo, String currency) {
+        Gson g = new Gson();
+        JsonObject obj = ratesInfo.getAsJsonObject(currency);
+        return obj.getAsFloat();
 
     }
+
     /**
      * Construct an exchange rate reader using the given base URL. All requests
      * will then be relative to that URL. If, for example, your source is Xavier
@@ -30,9 +31,8 @@ public class ExchangeRateReader {
      * for specific days will be constructed from that URL by appending the
      * year, month, and day; the URL for 25 June 2010, for example, would be
      * http://api.finance.xaviermedia.com/api/2010/06/25.xml
-     * 
-     * @param baseURL
-     *            the base URL for requests
+     *
+     * @param baseURL the base URL for requests
      */
     public ExchangeRateReader(String baseURL) throws IOException {
         /*
@@ -43,7 +43,7 @@ public class ExchangeRateReader {
          */
 
         // TODO Your code here
- 	myURL = new URL(baseURL);
+        myURL = new URL(baseURL);
 
         // Reads the access keys from `etc/access_keys.properties`
         readAccessKeys();
@@ -71,7 +71,7 @@ public class ExchangeRateReader {
              * to rename the file ending in `.sample` by removing that suffix.
              */
             System.err.println("Couldn't open etc/access_keys.properties; have you renamed the sample file?");
-            throw(e);
+            throw (e);
         }
         properties.load(in);
         // This assumes we're using Fixer.io and that the desired access key is
@@ -82,45 +82,47 @@ public class ExchangeRateReader {
     /**
      * Get the exchange rate for the specified currency against the base
      * currency (the Euro) on the specified date.
-     * 
-     * @param currencyCode
-     *            the currency code for the desired currency
-     * @param year
-     *            the year as a four digit integer
-     * @param month
-     *            the month as an integer (1=Jan, 12=Dec)
-     * @param day
-     *            the day of the month as an integer
+     *
+     * @param currencyCode the currency code for the desired currency
+     * @param year         the year as a four digit integer
+     * @param month        the month as an integer (1=Jan, 12=Dec)
+     * @param day          the day of the month as an integer
      * @return the desired exchange rate
      * @throws IOException if there are problems reading from the server
      */
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
         // TODO Your code here
+        String montH;
+        String daY;
+        if (month < 10) {
+            montH = "0" + Integer.toString(month);
+        } else {
+            montH = Integer.toString(month);
+        }
+        if (day < 10) {
+            daY = "0" + Integer.toString(day);
+        } else {
+            daY = Integer.toString(day);
+        }
+        String date = Integer.toString(year) + "-" + montH + "-" + daY;
+        URL fixer = new URL(myURL + date);
+        InputStream inputStream = fixer.openStream();
 
-	String date = Integer.toString(year)+"-"+Integer.toString(month)+"-"+Integer.toString(day);
-	URL fixer = new URL(myURL+date+"?access_key=");
-	InputStream inputStream = fixer.openStream();
-	
-	InputStreamReader reader = new InputStreamReader(inputStream);
-	JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
+        InputStreamReader reader = new InputStreamReader(inputStream);
+        JsonObject jsonObject = new JsonParser().parse(reader).getAsJsonObject();
 
-	return getRate(jsonObject,currencyCode);
+        return getRate(jsonObject, currencyCode);
     }
 
     /**
      * Get the exchange rate of the first specified currency against the second
      * on the specified date.
-     * 
-     * @param fromCurrency
-     *            the currency code we're exchanging *from*
-     * @param toCurrency
-     *            the currency code we're exchanging *to*
-     * @param year
-     *            the year as a four digit integer
-     * @param month
-     *            the month as an integer (1=Jan, 12=Dec)
-     * @param day
-     *            the day of the month as an integer
+     *
+     * @param fromCurrency the currency code we're exchanging *from*
+     * @param toCurrency   the currency code we're exchanging *to*
+     * @param year         the year as a four digit integer
+     * @param month        the month as an integer (1=Jan, 12=Dec)
+     * @param day          the day of the month as an integer
      * @return the desired exchange rate
      * @throws IOException if there are problems reading from the server
      */
@@ -128,9 +130,21 @@ public class ExchangeRateReader {
             String fromCurrency, String toCurrency,
             int year, int month, int day) throws IOException {
         // TODO Your code here
+        String montH;
+        String daY;
+        if (month < 10) {
+            montH = "0" + Integer.toString(month);
+        } else {
+            montH = Integer.toString(month);
+        }
+        if (day < 10) {
+            daY = "0" + Integer.toString(day);
+        } else {
+            daY = Integer.toString(day);
+        }
 
-        String date = Integer.toString(year)+"-"+Integer.toString(month)+"-"+Integer.toString(day);
-        URL fixer = new URL(myURL+date+"?access_key=");
+        String date = Integer.toString(year) + "-" + montH + "-" + daY;
+        URL fixer = new URL(myURL + date);
         InputStream inputStream = fixer.openStream();
 
         InputStreamReader reader = new InputStreamReader(inputStream);
