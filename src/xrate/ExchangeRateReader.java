@@ -104,7 +104,7 @@ public class ExchangeRateReader {
         } else {
             daY = Integer.toString(day);
         }
-        String date = Integer.toString(year) + "-" + montH + "-" + daY;
+        String date = Integer.toString(year) + "-" + montH + "-" + daY+"?access_key=" + accessKey;
         URL fixer = new URL(myURL + date);
         InputStream inputStream = fixer.openStream();
 
@@ -143,7 +143,7 @@ public class ExchangeRateReader {
             daY = Integer.toString(day);
         }
 
-        String date = Integer.toString(year) + "-" + montH + "-" + daY;
+        String date = Integer.toString(year) + "-" + montH + "-" + daY+"?access_key=" + accessKey;
         URL fixer = new URL(myURL + date);
         InputStream inputStream = fixer.openStream();
 
